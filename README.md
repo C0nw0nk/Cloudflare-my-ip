@@ -13,6 +13,9 @@ Just run this script on the machine with a dynamic IP and then use the domain na
 # Requirements
 
 CURL I strongly recommend this CURL build for Windows.
+
 https://curl.se/download.html#Win64
+
 https://curl.se/download.html#Win32
+
 https://skanthak.homepage.t-online.de/download/curl-7.64.1.cab
