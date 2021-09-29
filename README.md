@@ -10,6 +10,9 @@ Keeps your dynamic IP static by using a subdomain instead of your actual IP addr
 
 Just run this script on the machine with a dynamic IP and then use the domain name to connect in future
 
+
+The reason i made this is so i could have my Windows 10 PC run this script as a `scheduled task` because i have a `dynamic IP address` this way i will use a `subdomain` to use for `FTP` and `remote desktop` when i need to access the PC remotely without having to get the new IP address when it changes it is automated.
+
 # Usage
 
 Download ```curl.cmd``` and put your ```curl.exe``` in the same directory as the script.
