@@ -10,6 +10,17 @@ Keeps your dynamic IP static by using a subdomain instead of your actual IP addr
 
 Just run this script on the machine with a dynamic IP and then use the domain name to connect in future
 
+# Usage
+
+Download ```curl.cmd``` and put your ```curl.exe``` in the same directory as the script.
+
+# Customization
+
+You can change https://github.com/C0nw0nk/Cloudflare-my-ip/blob/main/curl.cmd#L10-L15 To set your Cloudflare API key and domain information you wish to modify.
+
+You can change ```root_path=%~dp0``` to the directory you wish to use for your curl executable. For example ```root_path=C:\curl_folder\```
+
+
 # Requirements
 
 CURL I strongly recommend this CURL build for Windows.
