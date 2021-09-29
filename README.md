@@ -18,7 +18,7 @@ Download ```curl.cmd``` and put your ```curl.exe``` in the same directory as the
 
 You can change https://github.com/C0nw0nk/Cloudflare-my-ip/blob/main/curl.cmd#L10-L15 To set your Cloudflare API key and domain information you wish to modify.
 
-You can change ```root_path=%~dp0``` to the directory you wish to use for your curl executable. For example ```root_path=C:\curl_folder\```
+You can change ```root_path=%~dp0``` to the directory you wish to use for your curl executable. For example ```root_path=C:\curl_folder\``` By default the script will assume the ```curl.exe``` is inside the same folder as ```curl.cmd```
 
 
 # Requirements
