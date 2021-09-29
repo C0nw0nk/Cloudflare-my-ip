@@ -7,8 +7,11 @@ TITLE github.com/C0nw0nk/Cloudflare-my-ip - Cloudflare API Batch FILE CMD Script
 
 :: Edit Cloudflare API Key and Set your own domain details
 
+:: CloudFlare API Key
 set cf_api_key=APIKEYHERE!
+:: Domain name without subdomains
 set zone_name=primarydomain.com
+:: DNS record to be modified
 set dns_record=localhost.primarydomain.com
 
 :: End Edit DO NOT TOUCH ANYTHING BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING!
@@ -27,6 +30,7 @@ rem echo %ip%
 For /f "delims=" %%x in ('
 %root_path%curl.exe "https://api.cloudflare.com/client/v4/zones?name=%zone_name%&status=active" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" 2^>Nul
 ') do set "data=!data!%%x"
+:: Remove new lines and put entire response on a single line
 set data=%data:"=\"%
 rem echo %data%
 
@@ -38,6 +42,7 @@ rem echo %cf_zone_id%
 For /f "delims=" %%x in ('
 %root_path%curl.exe "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records?type=A&name=%dns_record%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" 2^>Nul
 ') do set "data2=!data2!%%x"
+:: Remove new lines and put entire response on a single line
 set data2=%data2:"=\"%
 rem echo %data2%
 
@@ -61,7 +66,5 @@ echo }>>binary.txt
 
 :: Send our JSON to Cloudflare API
 %root_path%curl.exe -X PUT "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application\/json" --data-binary "@%root_path%binary.txt"
-
-TIMEOUT /T 10
 
 EXIT
