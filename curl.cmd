@@ -5,17 +5,20 @@ TITLE github.com/C0nw0nk/Cloudflare-my-ip - Cloudflare API Batch FILE CMD Script
 :: https://github.com/C0nw0nk/Cloudflare-my-ip
 :: https://www.facebook.com/C0nw0nk
 
+:: To run this Automatically open command prompt RUN COMMAND PROMPT AS ADMINISTRATOR and use the following command
+:: SCHTASKS /CREATE /SC HOURLY /TN "Cons Cloudflare API Script" /RU "SYSTEM" /TR "C:\Windows\System32\cmd.exe /c start /B "C:\path-to\script\curl.cmd"
+
 :: Edit Cloudflare API Key and Set your own domain details
 
-:: CloudFlare API Key
+:: CloudFlare API Key | https://developers.cloudflare.com/api/tokens/create
 set cf_api_key=APIKEYHERE!
 :: Domain name without subdomains
 set zone_name=primarydomain.com
 :: DNS record to be modified
 set dns_record=localhost.primarydomain.com
 :: IP Type :
-:: ip_type=0 | Localhost (DEFAULT)
-:: ip_type=1 | Public Internet IP
+:: ip_type=0 | Localhost
+:: ip_type=1 | Public Internet IP (DEFAULT)
 :: ip_type=1.1.1.1 | Custom
 set ip_type=1
 
