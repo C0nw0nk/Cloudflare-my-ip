@@ -23,6 +23,13 @@ You can change https://github.com/C0nw0nk/Cloudflare-my-ip/blob/main/curl.cmd#L1
 
 You can change ```root_path=%~dp0``` to the directory you wish to use for your curl executable. For example ```root_path=C:\curl_folder\``` By default the script will assume the ```curl.exe``` is inside the same folder as ```curl.cmd```
 
+# Run Automatically
+
+Go to your Search Bar and Type in `CMD.exe` then Right Click `CMD.exe` and `RUN AS ADMINISTATOR`
+
+Paste the following command into CMD to create a scheduled task to keep your IP address upto date every hour.
+
+```SCHTASKS /CREATE /SC HOURLY /TN "Cons Cloudflare API Script" /RU "SYSTEM" /TR "C:\Windows\System32\cmd.exe /c start /B "C:\path-to\script\curl.cmd"```
 
 # Requirements
 
