@@ -24,6 +24,7 @@ set ip_type=1
 color 0A
 %*
 SET root_path=%~dp0
+SET binary_file=binary.txt
 
 IF NOT DEFINED ip_type (SET ip_type=1)
 IF /I "%ip_type%"=="0" (goto :localhost_ip) else (goto :public_ip)
@@ -83,20 +84,28 @@ set cf_id=%data2:~23,32%
 rem echo %cf_id%
 
 :: Build our JSON to send to Cloudflare API to Update the DNS record with our current IP address
-echo {>binary.txt
-echo 	"content": "%ip%",>>binary.txt
-echo 	"data": {},>>binary.txt
-echo 	"id": "%cf_id%",>>binary.txt
-echo 	"name": "%dns_record%",>>binary.txt
-echo 	"proxiable": true,>>binary.txt
-echo 	"proxied": false,>>binary.txt
-echo 	"ttl": 1,>>binary.txt
-echo 	"type": "A",>>binary.txt
-echo 	"zone_id": "%cf_zone_id%",>>binary.txt
-echo 	"zone_name": "%zone_name%">>binary.txt
-echo }>>binary.txt
+echo {>%root_path%%binary_file%
+echo 	"content": "%ip%",>>%root_path%%binary_file%
+echo 	"data": {},>>%root_path%%binary_file%
+echo 	"id": "%cf_id%",>>%root_path%%binary_file%
+echo 	"name": "%dns_record%",>>%root_path%%binary_file%
+echo 	"proxiable": true,>>%root_path%%binary_file%
+echo 	"proxied": false,>>%root_path%%binary_file%
+echo 	"ttl": 1,>>%root_path%%binary_file%
+echo 	"type": "A",>>%root_path%%binary_file%
+echo 	"zone_id": "%cf_zone_id%",>>%root_path%%binary_file%
+echo 	"zone_name": "%zone_name%">>%root_path%%binary_file%
+echo }>>%root_path%%binary_file%
 
 :: Send our JSON to Cloudflare API
-%root_path%curl.exe -X PUT "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application\/json" --data-binary "@%root_path%binary.txt"
+For /f "delims=" %%x in ('
+%root_path%curl.exe -X PUT "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%" 2^>Nul
+') do set "data3=!data3!%%x"
+:: Remove new lines and put entire response on a single line
+set data3=%data3:"=\"%
+rem echo %data3%
+
+:: Delete the binary file
+del "%root_path%%binary_file%"
 
 EXIT
