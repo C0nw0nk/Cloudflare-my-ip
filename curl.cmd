@@ -13,6 +13,11 @@ set cf_api_key=APIKEYHERE!
 set zone_name=primarydomain.com
 :: DNS record to be modified
 set dns_record=localhost.primarydomain.com
+:: IP Type :
+:: ip_type=0 | Localhost (DEFAULT)
+:: ip_type=1 | Public Internet IP
+:: ip_type=1.1.1.1 | Custom
+set ip_type=1
 
 :: End Edit DO NOT TOUCH ANYTHING BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING!
 
@@ -20,11 +25,38 @@ color 0A
 %*
 SET root_path=%~dp0
 
+IF NOT DEFINED ip_type (SET ip_type=1)
+IF /I "%ip_type%"=="0" (goto :localhost_ip) else (goto :public_ip)
+:localhost_ip
+:: Get Private IP Land Line Localhost Address
+for /f "tokens=1,2* delims=:" %%A in ('
+ipconfig ^| find "IPv4 Address"
+') do (
+    set "tempip=%%~B"
+    set "tempip=!tempip: =!"
+    ping !tempip! -n 1 -w 50 >Nul
+    if !errorlevel!==0 (
+        set localip=!tempip!
+        goto foundlocal
+    )
+)
+:foundlocal
+set ip=%localip%
+goto :ip_end
+
+:public_ip
+IF /I NOT "%ip_type%"=="1" (
+SET ip=%ip_type%
+goto :ip_end
+)
+
 :: Get IP Address with CURL
 for /F %%I in ('
 %root_path%curl.exe "https://checkip.amazonaws.com/" 2^>Nul
 ') do set ip=%%I
 rem echo %ip%
+
+:ip_end
 
 :: Get Zone ID number from Cloudflare API
 For /f "delims=" %%x in ('
