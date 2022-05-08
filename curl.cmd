@@ -100,9 +100,13 @@ echo 	"zone_id": "%cf_zone_id%",>>%root_path%%binary_file%
 echo 	"zone_name": "%zone_name%">>%root_path%%binary_file%
 echo }>>%root_path%%binary_file%
 
+(echo(%cf_id%)|find /i "," >nul && (
+%root_path%curl.exe -X POST "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%"
+)
+
 :: Send our JSON to Cloudflare API
 For /f "delims=" %%x in ('
-%root_path%curl.exe -X PUT "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%" 2^>Nul
+%root_path%curl.exe -X POST "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%" 2^>Nul
 ') do set "data3=!data3!%%x"
 :: Remove new lines and put entire response on a single line
 set data3=%data3:"=\"%
