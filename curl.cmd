@@ -100,8 +100,9 @@ echo 	"zone_id": "%cf_zone_id%",>>%root_path%%binary_file%
 echo 	"zone_name": "%zone_name%">>%root_path%%binary_file%
 echo }>>%root_path%%binary_file%
 
+:: Incase record does not exist create it first
 (echo(%cf_id%)|find /i "," >nul && (
-%root_path%curl.exe -X POST "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%"
+%root_path%curl.exe -X POST "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%" >Nul
 )
 
 :: Send our JSON to Cloudflare API
