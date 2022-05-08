@@ -21,6 +21,11 @@ set dns_record=localhost.primarydomain.com
 :: ip_type=1 | Public Internet IP (DEFAULT)
 :: ip_type=1.1.1.1 | Custom
 set ip_type=1
+::Type of record we are creating
+:: A record
+:: TXT record
+:: CNAME
+set record_type=A
 
 :: End Edit DO NOT TOUCH ANYTHING BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING!
 
@@ -76,7 +81,7 @@ rem echo %cf_zone_id%
 
 :: Prove the Zone ID number of main domain to Get DNS ID number of the subdomain from Cloudflare API
 For /f "delims=" %%x in ('
-%root_path%curl.exe "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records?type=A&name=%dns_record%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" 2^>Nul
+%root_path%curl.exe "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records?type=%record_type%&name=%dns_record%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" 2^>Nul
 ') do set "data2=!data2!%%x"
 :: Remove new lines and put entire response on a single line
 set data2=%data2:"=\"%
@@ -95,7 +100,7 @@ echo 	"name": "%dns_record%",>>%root_path%%binary_file%
 echo 	"proxiable": true,>>%root_path%%binary_file%
 echo 	"proxied": false,>>%root_path%%binary_file%
 echo 	"ttl": 1,>>%root_path%%binary_file%
-echo 	"type": "A",>>%root_path%%binary_file%
+echo 	"type": "%record_type%",>>%root_path%%binary_file%
 echo 	"zone_id": "%cf_zone_id%",>>%root_path%%binary_file%
 echo 	"zone_name": "%zone_name%">>%root_path%%binary_file%
 echo }>>%root_path%%binary_file%
