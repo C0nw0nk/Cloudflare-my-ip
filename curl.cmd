@@ -20,6 +20,8 @@ set dns_record=localhost.primarydomain.com
 :: ip_type=0 | Localhost
 :: ip_type=1 | Public Internet IP (DEFAULT)
 :: ip_type=1.1.1.1 | Custom
+:: If you are using custom or text records set them like this
+:: ip_type=\"v=DMARC1; p=none\"
 set ip_type=1
 ::Type of record we are creating
 :: A record
