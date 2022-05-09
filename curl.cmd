@@ -21,13 +21,17 @@ set dns_record=localhost.primarydomain.com
 :: ip_type=1 | Public Internet IP (DEFAULT)
 :: ip_type=1.1.1.1 | Custom
 :: If you are using custom or text records set them like this
-:: ip_type=\"v^=DMARC1^;^ p^=none\"
+:: ip_type=\"v^=DMARC1^;^ p^=quarantine\"
 set ip_type=1
 ::Type of record we are creating
 :: A record
 :: TXT record
 :: CNAME
 set record_type=A
+:: If you don't want to add or edit but want to delete a record
+:: Default value 0
+:: 1 is to delete the provided dns_record
+set delete_record=0
 
 :: End Edit DO NOT TOUCH ANYTHING BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING!
 
@@ -93,6 +97,11 @@ rem echo %data2%
 set cf_id=%data2:~23,32%
 rem echo %cf_id%
 
+IF /I "%delete_record%"=="1" (
+%root_path%curl.exe -X DELETE "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records/%cf_id%" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" >Nul
+goto :ending
+)
+
 :: Build our JSON to send to Cloudflare API to Update the DNS record with our current IP address
 echo {>%root_path%%binary_file%
 echo 	"content": "%ip%",>>%root_path%%binary_file%
@@ -110,6 +119,7 @@ echo }>>%root_path%%binary_file%
 :: Incase record does not exist create it first
 (echo(%cf_id%)|find /i "," >nul && (
 %root_path%curl.exe -X POST "https://api.cloudflare.com/client/v4/zones/%cf_zone_id%/dns_records" -H "Authorization: Bearer %cf_api_key%" -H "content-type:application/json" --data-binary "@%root_path%%binary_file%" >Nul
+goto :ending
 )
 
 :: Send our JSON to Cloudflare API
@@ -120,6 +130,7 @@ For /f "delims=" %%x in ('
 set data3=%data3:"=\"%
 rem echo %data3%
 
+:ending
 :: Delete the binary file
 del "%root_path%%binary_file%"
 
