@@ -108,6 +108,9 @@ echo 	"content": "%ip%",>>%root_path%%binary_file%
 echo 	"data": {},>>%root_path%%binary_file%
 echo 	"id": "%cf_id%",>>%root_path%%binary_file%
 echo 	"name": "%dns_record%",>>%root_path%%binary_file%
+IF /I "%record_type%"=="MX" (
+echo    "priority": 10,>>%root_path%%binary_file%
+)
 echo 	"proxiable": true,>>%root_path%%binary_file%
 echo 	"proxied": false,>>%root_path%%binary_file%
 echo 	"ttl": 1,>>%root_path%%binary_file%
